@@ -5,6 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 // 导入翻译文件
 import zhCN from '../i18n/locales/zh-CN.json';
 import en from '../i18n/locales/en.json';
+import jp from '../i18n/locales/jp.json';
 
 // 配置i18next
 i18n
@@ -21,8 +22,11 @@ i18n
       en: {
         translation: en,
       },
+      jp: {
+        translation: jp,
+      },
     },
-    fallbackLng: 'zh-CN',
+    fallbackLng: 'jp',
     debug: import.meta.env.MODE === 'development',
     interpolation: {
       escapeValue: false, // 不转义HTML
@@ -33,4 +37,4 @@ i18n
     },
   });
 
-export default i18n; 
+export default i18n;

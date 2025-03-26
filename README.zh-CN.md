@@ -12,7 +12,7 @@
   <h3>💌 安全、简单、即用即走的临时邮箱服务</h3>
 
   <p>
-    <a href="https://mail.mdzz.uk" target="_blank"><strong>🌐 在线体验</strong></a> •
+    <a href="https://mail.city9.net" target="_blank"><strong>🌐 在线体验</strong></a> •
     <a href="#功能特点"><strong>✨ 功能特点</strong></a> •
     <a href="#快速部署"><strong>🚀 快速部署</strong></a> •
     <a href="#本地开发"><strong>💻 本地开发</strong></a> •
@@ -107,8 +107,8 @@ ZMAIL 由前端和后端两部分组成，需要分别部署：
     </li>
     <li>配置环境变量:
       <ul>
-        <li><code>VITE_API_BASE_URL</code>: 您的Worker API基础URL (例如: <code>https://api.mdzz.uk</code>)</li>
-         <li><code>VITE_EMAIL_DOMAIN</code>: 您的域名 (例如: <code>mdzz.uk</code>)</li>
+        <li><code>VITE_API_BASE_URL</code>: 您的Worker API基础URL (例如: <code>https://api.city9.net</code>)</li>
+         <li><code>VITE_EMAIL_DOMAIN</code>: 您的域名 (例如: <code>city9.net</code>)</li>
       </ul>
     </li>
     <li>点击"保存并部署"</li>

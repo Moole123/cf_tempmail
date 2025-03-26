@@ -8,6 +8,7 @@ const LanguageSwitcher: React.FC = () => {
   const languages = [
     { code: 'zh-CN', name: '简体中文', icon: 'fa-solid fa-language' },
     { code: 'en', name: 'English', icon: 'fa-solid fa-language' },
+    { code: 'jp', name: '日本語', icon: 'fa-solid fa-language' },
   ];
   
   const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
@@ -50,4 +51,4 @@ const LanguageSwitcher: React.FC = () => {
   );
 };
 
-export default LanguageSwitcher; 
+export default LanguageSwitcher;

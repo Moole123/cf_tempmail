@@ -12,7 +12,7 @@
   <h3>💌 Secure, Simple, Disposable Email Service</h3>
 
   <p>
-    <a href="https://mail.mdzz.uk" target="_blank"><strong>🌐 Live Demo</strong></a> •
+    <a href="https://mail.city9.net" target="_blank"><strong>🌐 Live Demo</strong></a> •
     <a href="#features"><strong>✨ Features</strong></a> •
     <a href="#quick-deployment"><strong>🚀 Deployment</strong></a> •
     <a href="#local-development"><strong>💻 Development</strong></a> •
@@ -107,8 +107,8 @@ ZMAIL consists of two parts that need to be deployed separately:
     </li>
     <li>Configure environment variables:
       <ul>
-        <li><code>VITE_API_BASE_URL</code>: Your Worker API base URL (e.g., <code>https://api.mdzz.uk</code>)</li>
-         <li><code>VITE_EMAIL_DOMAIN</code>: Your Domain (e.g., <code>mdzz.uk</code>)</li>
+        <li><code>VITE_API_BASE_URL</code>: Your Worker API base URL (e.g., <code>https://api.city9.net</code>)</li>
+         <li><code>VITE_EMAIL_DOMAIN</code>: Your Domain (e.g., <code>city9.net</code>)</li>
       </ul>
     </li>
     <li>Click "Save and Deploy"</li>
