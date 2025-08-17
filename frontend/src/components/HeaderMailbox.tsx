@@ -177,22 +177,22 @@ const HeaderMailbox: React.FC<HeaderMailboxProps> = ({
   const renderMobileAddress = () => {
     const fullAddress = mailbox.address.includes('@') ? mailbox.address : `${mailbox.address}@${domain}`;
     const [username, domainPart] = fullAddress.split('@');
-    
+
     // 如果用户名太长，截断显示
     const displayUsername = username.length > 10 ? `${username.substring(0, 8)}...` : username;
-    
+
     return (
-      <code className="bg-muted px-2 py-1 rounded text-xs font-medium truncate max-w-[120px]">
+      <code className="bg-white/30 text-white px-2 py-1 rounded text-xs font-medium truncate max-w-[120px]">
         {displayUsername}@{domainPart}
       </code>
     );
   };
-  
-  // 按钮基础样式
-  const buttonBaseClass = "flex items-center justify-center rounded-md transition-all duration-200";
-  const copyButtonClass = `${buttonBaseClass} hover:bg-primary/20 hover:text-primary hover:scale-110 mx-1`;
-  const refreshButtonClass = `${buttonBaseClass} bg-muted hover:bg-primary/20 hover:text-primary hover:scale-110 mr-1`;
-  const customizeButtonClass = `${buttonBaseClass} bg-primary text-primary-foreground hover:bg-primary/80 hover:scale-110`;
+
+  // 按钮基础样式 - 适配白色头部
+  const buttonBaseClass = "flex items-center justify-center rounded-md transition-all duration-200 text-white";
+  const copyButtonClass = `${buttonBaseClass} hover:bg-white/20 hover:scale-110 mx-1`;
+  const refreshButtonClass = `${buttonBaseClass} bg-white/20 hover:bg-white/30 hover:scale-110 mr-1`;
+  const customizeButtonClass = `${buttonBaseClass} bg-white text-blue-600 hover:bg-white/90 hover:scale-110`;
   
   return (
     <div className="flex items-center">
@@ -256,7 +256,7 @@ const HeaderMailbox: React.FC<HeaderMailboxProps> = ({
           <div className="hidden md:flex items-center flex-col">
             {/* 邮箱地址和操作按钮 */}
             <div className="flex items-center">
-              <code className="px-3 py-1.5 text-sm font-medium">
+              <code className="px-3 py-1.5 text-sm font-medium text-white bg-white/20 rounded">
                 {mailbox.address.includes('@') ? mailbox.address : `${mailbox.address}@${domain}`}
               </code>
               

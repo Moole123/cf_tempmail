@@ -4,35 +4,47 @@
  
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
- 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
- 
+    /* The-Navi.Net 风格的颜色系统 */
+    --background: 210 20% 98%;  /* #F5F7FA */
+    --foreground: 210 22% 20%;  /* #333333 */
+
+    --card: 0 0% 100%;          /* #FFFFFF */
+    --card-foreground: 210 22% 20%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
- 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
- 
+    --popover-foreground: 210 22% 20%;
+
+    --primary: 210 70% 58%;     /* #4A90E2 - The-Navi.Net 主蓝色 */
+    --primary-foreground: 0 0% 100%;
+
     --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
- 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
- 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
- 
+    --secondary-foreground: 210 70% 58%;
+
+    --muted: 210 20% 96%;       /* #F8FAFC */
+    --muted-foreground: 210 15% 40%;  /* #666666 */
+
+    --accent: 210 70% 58%;      /* 使用主蓝色作为强调色 */
+    --accent-foreground: 0 0% 100%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
- 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
- 
+
+    --border: 210 20% 89%;      /* #E1E8ED */
+    --input: 210 20% 89%;
+    --ring: 210 70% 58%;        /* 使用主蓝色 */
+
     --radius: 0.5rem;
+
+    /* The-Navi.Net 特定颜色变量 */
+    --navi-blue: #4A90E2;
+    --navi-blue-dark: #357ABD;
+    --navi-blue-light: #6BA3E8;
+    --navi-background: #F5F7FA;
+    --navi-card: #FFFFFF;
+    --navi-text-dark: #333333;
+    --navi-text-gray: #666666;
+    --navi-text-light: #999999;
+    --navi-border: #E1E8ED;
   }
  
   .dark {
@@ -72,5 +84,159 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-} 
+}
+
+/* The-Navi.Net 风格的组件样式 */
+@layer components {
+  .navi-header {
+    background: linear-gradient(135deg, var(--navi-blue) 0%, var(--navi-blue-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .navi-card {
+    background: var(--navi-card);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--navi-border);
+    transition: all 0.2s ease;
+  }
+
+  .navi-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .navi-button-primary {
+    background: var(--navi-blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .navi-button-primary:hover {
+    background: var(--navi-blue-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .navi-button-secondary {
+    background: white;
+    color: var(--navi-blue);
+    border: 1px solid var(--navi-blue);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .navi-button-secondary:hover {
+    background: var(--navi-blue);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .navi-input {
+    border: 1px solid var(--navi-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    background: white;
+    transition: all 0.2s ease;
+  }
+
+  .navi-input:focus {
+    outline: none;
+    border-color: var(--navi-blue);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+  }
+
+  /* 邮件列表项样式 */
+  .email-item {
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+    background: white;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .email-item:hover {
+    background-color: #F8FAFC;
+    border-left-color: var(--navi-blue-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateX(2px);
+  }
+
+  .email-item.selected {
+    background-color: #EBF4FF;
+    border-left-color: var(--navi-blue);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+  }
+
+  .email-item.unread {
+    background-color: #FFFBF0;
+    border-left-color: #FFA500;
+  }
+
+  .email-item.unread .email-subject {
+    font-weight: 600;
+  }
+
+  /* 邮件内容样式 */
+  .email-content {
+    line-height: 1.6;
+    color: var(--navi-text-dark);
+  }
+
+  .email-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 8px 0;
+  }
+
+  /* 附件样式 */
+  .attachment-item {
+    background: var(--navi-background);
+    border: 1px solid var(--navi-border);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .attachment-item:hover {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+
+  /* 文本颜色工具类 */
+  .text-navi-primary {
+    color: var(--navi-blue);
+  }
+
+  .text-navi-secondary {
+    color: var(--navi-text-gray);
+  }
+
+  .text-navi-muted {
+    color: var(--navi-text-light);
+  }
+
+  /* 分隔线样式 */
+  .navi-divider {
+    border-color: var(--navi-border);
+  }
+}

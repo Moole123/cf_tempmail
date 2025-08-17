@@ -131,20 +131,23 @@ const MailboxPage: React.FC = () => {
     <div className="flex flex-col space-y-6">
       {/* 错误和成功提示 */}
       {(errorMessage || successMessage) && (
-        <div className={`p-3 rounded-md ${errorMessage ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
-          {errorMessage || successMessage}
+        <div className={`p-4 rounded-md ${errorMessage ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'}`}>
+          <div className="flex items-center">
+            <i className={`fas ${errorMessage ? 'fa-exclamation-triangle' : 'fa-check-circle'} mr-2`}></i>
+            {errorMessage || successMessage}
+          </div>
         </div>
       )}
-      
+
       {mailbox && (
-        <MailboxInfo 
-          mailbox={mailbox} 
+        <MailboxInfo
+          mailbox={mailbox}
           onDelete={handleDeleteMailbox}
           autoRefresh={autoRefresh}
           onToggleAutoRefresh={() => setAutoRefresh(!autoRefresh)}
         />
       )}
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-300px)]">
         <div className="lg:col-span-1">
           <EmailList
@@ -162,13 +165,18 @@ const MailboxPage: React.FC = () => {
               showCloseButton={false}
             />
           ) : (
-            <div className="border rounded-lg p-6 h-full flex items-center justify-center">
+            <div className="navi-card p-6 h-full flex items-center justify-center">
               <div className="text-center">
-                <i className="fas fa-envelope-open text-4xl text-muted-foreground mb-4"></i>
-                <p className="text-muted-foreground">
+                <div className="mb-6">
+                  <i className="fas fa-envelope-open text-6xl text-navi-blue-light"></i>
+                </div>
+                <h3 className="text-xl font-semibold text-navi-primary mb-2">
+                  {emails.length > 0 ? t('email.selectEmailPrompt') : t('email.emptyInbox')}
+                </h3>
+                <p className="text-navi-secondary">
                   {emails.length > 0
-                    ? t('email.selectEmailPrompt')
-                    : t('email.emptyInbox')}
+                    ? '点击左侧邮件列表中的邮件来查看详情'
+                    : '等待新邮件到达...'}
                 </p>
               </div>
             </div>

@@ -69,9 +69,9 @@ const EmailList: React.FC<EmailListProps> = ({
   
   if (isLoading) {
     return (
-      <div className="border rounded-lg p-6">
+      <div className="navi-card p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">{t('email.inbox')}</h2>
+          <h2 className="text-lg font-semibold text-navi-primary">{t('email.inbox')}</h2>
         </div>
         <div className="flex justify-center items-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -79,22 +79,26 @@ const EmailList: React.FC<EmailListProps> = ({
       </div>
     );
   }
-  
+
   return (
-    <div className="border rounded-lg h-full flex flex-col">
-      <div className="flex justify-between items-center p-4 border-b">
-        <h2 className="text-lg font-semibold">{t('email.inbox')}</h2>
+    <div className="navi-card h-full flex flex-col">
+      <div className="flex justify-between items-center p-4 navi-divider border-b">
+        <h2 className="text-lg font-semibold text-navi-primary">{t('email.inbox')}</h2>
         <div className="flex items-center space-x-2">
           <button
             onClick={handleRefresh}
-            className="p-1 rounded-md hover:bg-muted"
+            className="p-2 rounded-md hover:bg-blue-50 text-navi-primary transition-colors"
             title={t('email.refresh')}
           >
             <i className="fas fa-sync-alt text-sm"></i>
           </button>
           <button
             onClick={toggleAutoRefresh}
-            className={`p-1 rounded-md ${autoRefresh ? 'text-primary' : 'text-muted-foreground'}`}
+            className={`p-2 rounded-md transition-colors ${
+              autoRefresh
+                ? 'text-navi-primary bg-blue-50'
+                : 'text-navi-secondary hover:bg-blue-50 hover:text-navi-primary'
+            }`}
             title={autoRefresh ? t('email.autoRefreshOn') : t('email.autoRefreshOff')}
           >
             <i className="fas fa-clock text-sm"></i>
@@ -103,65 +107,71 @@ const EmailList: React.FC<EmailListProps> = ({
       </div>
       
       {mailbox && (
-        <div className="px-4 py-2 bg-muted/30 border-b text-xs text-muted-foreground">
+        <div className="px-4 py-3 bg-blue-50/50 border-b text-xs text-navi-secondary">
           <div className="flex justify-between items-center mb-1">
-            <span>{t('mailbox.created')}:</span>
+            <span className="font-medium">{t('mailbox.created')}:</span>
             <span>{formatFullDate(mailbox.createdAt)}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span>{t('mailbox.expiresAt')}:</span>
+            <span className="font-medium">{t('mailbox.expiresAt')}:</span>
             <span>{formatFullDate(mailbox.expiresAt)}</span>
           </div>
           <div className="flex justify-between items-center mt-1">
-            <span>{t('mailbox.timeLeft')}:</span>
-            <span>{calculateTimeLeft(mailbox.expiresAt)}</span>
+            <span className="font-medium">{t('mailbox.timeLeft')}:</span>
+            <span className="text-navi-primary font-medium">{calculateTimeLeft(mailbox.expiresAt)}</span>
           </div>
         </div>
       )}
-      
-      <div className="flex justify-between items-center px-4 py-2 bg-muted/30">
-        <span className="text-sm text-muted-foreground">
+
+      <div className="flex justify-between items-center px-4 py-2 bg-gray-50/50 border-b">
+        <span className="text-sm text-navi-secondary font-medium">
           {emails.length} {emails.length === 1 ? t('email.message') : t('email.messages')}
         </span>
-        <span className="text-xs text-muted-foreground">
+        <span className={`text-xs font-medium ${autoRefresh ? 'text-green-600' : 'text-navi-muted'}`}>
           {autoRefresh ? t('email.autoRefreshOn') : t('email.autoRefreshOff')}
         </span>
       </div>
       
       <div className="flex-1 overflow-hidden">
         {emails.length === 0 ? (
-          <div className="p-6 text-center text-muted-foreground h-full flex flex-col justify-center">
-            <p>{t('email.emptyInbox')}</p>
-            <p className="text-sm mt-2">{t('email.waitingForEmails')}</p>
+          <div className="p-6 text-center text-navi-secondary h-full flex flex-col justify-center">
+            <div className="mb-4">
+              <i className="fas fa-inbox text-4xl text-navi-muted"></i>
+            </div>
+            <p className="text-lg font-medium">{t('email.emptyInbox')}</p>
+            <p className="text-sm mt-2 text-navi-muted">{t('email.waitingForEmails')}</p>
           </div>
         ) : (
-          <div className="h-full overflow-y-auto">
-            <ul className="divide-y">
+          <div className="h-full overflow-y-auto p-2">
+            <div className="space-y-1">
               {emails.map((email) => (
-                <li
+                <div
                   key={email.id}
-                  className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
-                    selectedEmailId === email.id ? 'bg-muted border-r-2 border-primary' : ''
-                  } ${!email.isRead ? 'font-semibold' : ''}`}
+                  className={`email-item p-3 cursor-pointer ${
+                    selectedEmailId === email.id ? 'selected' : ''
+                  } ${!email.isRead ? 'unread' : ''}`}
                   onClick={() => onSelectEmail(email.id)}
                 >
-                  <div className="flex justify-between mb-1">
-                    <span className="truncate">{email.fromName || email.fromAddress}</span>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className={`truncate text-sm ${!email.isRead ? 'font-semibold text-navi-primary' : 'text-navi-secondary'}`}>
+                      {email.fromName || email.fromAddress}
+                    </span>
+                    <span className="text-xs text-navi-muted whitespace-nowrap ml-2">
                       {formatDate(email.receivedAt)}
                     </span>
                   </div>
-                  <div className="text-sm truncate">
+                  <div className={`text-sm truncate mb-1 ${!email.isRead ? 'font-semibold email-subject' : 'text-navi-secondary'}`}>
                     {email.subject || t('email.noSubject')}
                   </div>
                   {email.hasAttachments && (
-                    <div className="flex items-center mt-1">
-                      <i className="fas fa-paperclip text-xs text-muted-foreground"></i>
+                    <div className="flex items-center">
+                      <i className="fas fa-paperclip text-xs text-navi-primary"></i>
+                      <span className="text-xs text-navi-muted ml-1">{t('email.hasAttachments')}</span>
                     </div>
                   )}
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         )}
       </div>

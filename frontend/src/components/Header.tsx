@@ -20,28 +20,28 @@ const Header: React.FC<HeaderProps> = ({
   const { t } = useTranslation();
   
   return (
-    <header className="border-b">
+    <header className="navi-header">
       <Container>
-        <div className="flex items-center justify-between py-3">
-          <Link to="/" className="text-2xl font-bold">
+        <div className="flex items-center justify-between py-4">
+          <Link to="/" className="text-2xl font-bold text-white hover:text-white/90 transition-colors">
             {t('app.title')}
           </Link>
-          
+
           {mailbox && (
-            <div className="flex items-center bg-muted/70 rounded-md px-3 py-1.5">
-              <HeaderMailbox 
-                mailbox={mailbox} 
+            <div className="flex items-center bg-white/20 rounded-md px-3 py-1.5 backdrop-blur-sm">
+              <HeaderMailbox
+                mailbox={mailbox}
                 onMailboxChange={onMailboxChange}
                 domain={EMAIL_DOMAIN}
                 isLoading={isLoading}
               />
-              <div className="ml-3 pl-3 border-l border-muted-foreground/20 flex items-center">
+              <div className="ml-3 pl-3 border-l border-white/30 flex items-center">
                 <LanguageSwitcher />
                 <a
                   href="https://github.com/zaunist/zmail"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-8 h-8 flex items-center justify-center rounded-md transition-all duration-200 hover:bg-primary/20 hover:text-primary hover:scale-110 ml-1"
+                  className="w-8 h-8 flex items-center justify-center rounded-md transition-all duration-200 hover:bg-white/20 hover:scale-110 ml-1 text-white"
                   aria-label="GitHub"
                   title="GitHub"
                 >

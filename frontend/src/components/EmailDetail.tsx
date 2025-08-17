@@ -402,14 +402,14 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
         }
       `}</style>
 
-      <div className="border rounded-lg p-6 h-full flex flex-col">
+      <div className="navi-card p-6 h-full flex flex-col">
       {/* 错误和成功提示 */}
       {(errorMessage || successMessage) && (
-        <div className={`p-3 mb-4 rounded-md ${errorMessage ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+        <div className={`p-3 mb-4 rounded-md ${errorMessage ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200'}`}>
           {errorMessage || successMessage}
         </div>
       )}
-      
+
       {isLoading ? (
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -418,21 +418,30 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
         <div className="space-y-6 flex-1 overflow-y-auto">
           {/* 邮件头部信息 */}
           <div className="flex justify-between items-start">
-            <div>
-              <h2 className="text-xl font-semibold mb-2">
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold mb-3 text-navi-primary">
                 {email.subject || t('email.noSubject')}
               </h2>
-              <div className="text-sm text-muted-foreground">
-                <p><strong>{t('email.from')}:</strong> {email.fromAddress}</p>
-                <p><strong>{t('email.to')}:</strong> {email.toAddress}</p>
-                <p><strong>{t('email.date')}:</strong> {formatDate(email.receivedAt)}</p>
+              <div className="text-sm text-navi-secondary space-y-1">
+                <div className="flex items-center">
+                  <span className="font-medium text-navi-primary w-16">{t('email.from')}:</span>
+                  <span className="bg-blue-50 px-2 py-1 rounded text-navi-primary">{email.fromAddress}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-medium text-navi-primary w-16">{t('email.to')}:</span>
+                  <span className="bg-gray-50 px-2 py-1 rounded text-navi-secondary">{email.toAddress}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-medium text-navi-primary w-16">{t('email.date')}:</span>
+                  <span className="text-navi-muted">{formatDate(email.receivedAt)}</span>
+                </div>
               </div>
             </div>
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 ml-4">
               {showCloseButton && onClose && (
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-md hover:bg-muted"
+                  className="p-2 rounded-md hover:bg-gray-100 text-navi-secondary hover:text-navi-primary transition-colors"
                   title={t('common.close')}
                 >
                   <i className="fas fa-times"></i>
@@ -440,7 +449,7 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
               )}
               <button
                 onClick={handleDelete}
-                className="p-2 rounded-md hover:bg-red-100 text-red-600"
+                className="p-2 rounded-md hover:bg-red-50 text-red-500 hover:text-red-600 transition-colors"
                 title={t('common.delete')}
               >
                 <i className="fas fa-trash-alt"></i>
@@ -449,14 +458,17 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
           </div>
           
           {/* 分隔线 */}
-          <hr />
-          
+          <hr className="navi-divider" />
+
           {/* 邮件内容 */}
           <div>
-            <h3 className="font-medium mb-2">{t('email.content')}</h3>
+            <h3 className="font-medium mb-3 text-navi-primary flex items-center">
+              <i className="fas fa-envelope-open-text mr-2"></i>
+              {t('email.content')}
+            </h3>
             {email.htmlContent ? (
               <div
-                className="prose max-w-none border rounded-md p-4 bg-white email-content"
+                className="prose max-w-none navi-card p-4 email-content"
                 dangerouslySetInnerHTML={{ __html: processHtmlContent(email.htmlContent, attachments) }}
                 style={{
                   // 确保内联图片能正确显示
@@ -465,11 +477,12 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
                 } as React.CSSProperties}
               />
             ) : email.textContent ? (
-              <pre className="whitespace-pre-wrap border rounded-md p-4 bg-white font-sans">
+              <pre className="whitespace-pre-wrap navi-card p-4 font-sans text-navi-secondary">
                 {email.textContent}
               </pre>
             ) : (
-              <p className="text-muted-foreground italic">
+              <p className="text-navi-muted italic text-center py-8">
+                <i className="fas fa-file-alt text-2xl mb-2 block"></i>
                 {t('email.noContent')}
               </p>
             )}
@@ -478,43 +491,46 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
           {/* 附件 */}
           {email.hasAttachments && (
             <div>
-              <h3 className="font-medium mb-2">
-                {t('email.attachments')} 
+              <h3 className="font-medium mb-3 text-navi-primary flex items-center">
+                <i className="fas fa-paperclip mr-2"></i>
+                {t('email.attachments')}
                 {isLoadingAttachments && (
                   <span className="ml-2 inline-block animate-spin h-4 w-4 border-b-2 border-primary rounded-full"></span>
                 )}
               </h3>
-              
+
               {attachments.length > 0 ? (
                 <div className="space-y-3">
                   {attachments.map(attachment => (
-                    <div key={attachment.id} className="border rounded-md p-3 bg-white">
+                    <div key={attachment.id} className="attachment-item p-4">
                       <div className="flex justify-between items-center">
                         <div className="flex items-center space-x-3">
-                          <i className={`fas ${getFileIcon(attachment.mimeType)} text-primary text-lg`}></i>
+                          <i className={`fas ${getFileIcon(attachment.mimeType)} text-navi-primary text-xl`}></i>
                           <div>
-                            <p className="font-medium">{attachment.filename}</p>
-                            <p className="text-xs text-muted-foreground">{formatFileSize(attachment.size)}</p>
+                            <p className="font-medium text-navi-primary">{attachment.filename}</p>
+                            <p className="text-xs text-navi-muted">{formatFileSize(attachment.size)}</p>
                           </div>
                         </div>
-                        <a 
+                        <a
                           href={getAttachmentUrl(attachment.id, true)}
                           download={attachment.filename}
-                          className="px-3 py-1 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90"
+                          className="navi-button-primary text-sm"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
+                          <i className="fas fa-download mr-1"></i>
                           {t('email.download')}
                         </a>
                       </div>
-                      
+
                       {/* 附件预览 */}
                       {renderAttachmentPreview(attachment)}
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-muted-foreground italic">
+                <p className="text-navi-muted italic text-center py-4">
+                  <i className="fas fa-paperclip text-2xl mb-2 block"></i>
                   {t('email.noAttachments')}
                 </p>
               )}
