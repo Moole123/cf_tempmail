@@ -1,6 +1,7 @@
 import React, { useContext, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmailList from '../components/EmailList';
+import EmailDetail from '../components/EmailDetail';
 import { MailboxContext } from '../contexts/MailboxContext';
 import Container from '../components/Container';
 
@@ -60,12 +61,36 @@ const HomePage: React.FC = () => {
   return (
     <Container>
       <StructuredData />
-      <EmailList 
-        emails={emails} 
-        selectedEmailId={selectedEmail}
-        onSelectEmail={setSelectedEmail}
-        isLoading={isEmailsLoading}
-      />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
+        <div className="lg:col-span-1">
+          <EmailList
+            emails={emails}
+            selectedEmailId={selectedEmail}
+            onSelectEmail={setSelectedEmail}
+            isLoading={isEmailsLoading}
+          />
+        </div>
+        <div className="lg:col-span-2">
+          {selectedEmail ? (
+            <EmailDetail
+              emailId={selectedEmail}
+              onClose={() => setSelectedEmail(null)}
+              showCloseButton={false}
+            />
+          ) : (
+            <div className="border rounded-lg p-6 h-full flex items-center justify-center">
+              <div className="text-center">
+                <i className="fas fa-envelope-open text-4xl text-muted-foreground mb-4"></i>
+                <p className="text-muted-foreground">
+                  {emails.length > 0
+                    ? t('email.selectEmailPrompt')
+                    : t('email.emptyInbox')}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </Container>
   );
 };

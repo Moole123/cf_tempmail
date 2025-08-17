@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MailboxContext } from '../contexts/MailboxContext';
-import EmailDetail from './EmailDetail';
 
 interface EmailListProps {
   emails: Email[];
@@ -82,7 +81,7 @@ const EmailList: React.FC<EmailListProps> = ({
   }
   
   return (
-    <div className="border rounded-lg">
+    <div className="border rounded-lg h-full flex flex-col">
       <div className="flex justify-between items-center p-4 border-b">
         <h2 className="text-lg font-semibold">{t('email.inbox')}</h2>
         <div className="flex items-center space-x-2">
@@ -129,43 +128,43 @@ const EmailList: React.FC<EmailListProps> = ({
         </span>
       </div>
       
-      {emails.length === 0 ? (
-        <div className="p-6 text-center text-muted-foreground">
-          <p>{t('email.emptyInbox')}</p>
-          <p className="text-sm mt-2">{t('email.waitingForEmails')}</p>
-        </div>
-      ) : (
-        <ul className="divide-y">
-          {emails.map((email) => (
-            <React.Fragment key={email.id}>
-              <li 
-                className={`p-4 cursor-pointer hover:bg-muted/50 ${
-                  selectedEmailId === email.id ? 'bg-muted' : ''
-                } ${!email.isRead ? 'font-semibold' : ''}`}
-                onClick={() => onSelectEmail(selectedEmailId === email.id ? null : email.id)}
-              >
-                <div className="flex justify-between mb-1">
-                  <span className="truncate">{email.fromName || email.fromAddress}</span>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
-                    {formatDate(email.receivedAt)}
-                  </span>
-                </div>
-                <div className="text-sm truncate">
-                  {email.subject || t('email.noSubject')}
-                </div>
-              </li>
-              {selectedEmailId === email.id && (
-                <li className="border-t border-muted">
-                  <EmailDetail 
-                    emailId={email.id} 
-                    onClose={() => onSelectEmail(null)}
-                  />
+      <div className="flex-1 overflow-hidden">
+        {emails.length === 0 ? (
+          <div className="p-6 text-center text-muted-foreground h-full flex flex-col justify-center">
+            <p>{t('email.emptyInbox')}</p>
+            <p className="text-sm mt-2">{t('email.waitingForEmails')}</p>
+          </div>
+        ) : (
+          <div className="h-full overflow-y-auto">
+            <ul className="divide-y">
+              {emails.map((email) => (
+                <li
+                  key={email.id}
+                  className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
+                    selectedEmailId === email.id ? 'bg-muted border-r-2 border-primary' : ''
+                  } ${!email.isRead ? 'font-semibold' : ''}`}
+                  onClick={() => onSelectEmail(email.id)}
+                >
+                  <div className="flex justify-between mb-1">
+                    <span className="truncate">{email.fromName || email.fromAddress}</span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
+                      {formatDate(email.receivedAt)}
+                    </span>
+                  </div>
+                  <div className="text-sm truncate">
+                    {email.subject || t('email.noSubject')}
+                  </div>
+                  {email.hasAttachments && (
+                    <div className="flex items-center mt-1">
+                      <i className="fas fa-paperclip text-xs text-muted-foreground"></i>
+                    </div>
+                  )}
                 </li>
-              )}
-            </React.Fragment>
-          ))}
-        </ul>
-      )}
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

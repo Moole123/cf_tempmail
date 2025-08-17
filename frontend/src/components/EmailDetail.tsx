@@ -5,7 +5,8 @@ import { MailboxContext } from '../contexts/MailboxContext';
 
 interface EmailDetailProps {
   emailId: string;
-  onClose: () => void;
+  onClose?: () => void;
+  showCloseButton?: boolean;
 }
 
 interface Attachment {
@@ -19,7 +20,7 @@ interface Attachment {
   chunksCount: number;
 }
 
-const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose }) => {
+const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseButton = true }) => {
   const { t } = useTranslation();
   const { emailCache, addToEmailCache, handleMailboxNotFound } = useContext(MailboxContext);
   const [email, setEmail] = useState<Email | null>(null);
@@ -377,7 +378,7 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose }) => {
         }
       `}</style>
 
-      <div className="border rounded-lg p-6">
+      <div className="border rounded-lg p-6 h-full flex flex-col">
       {/* 错误和成功提示 */}
       {(errorMessage || successMessage) && (
         <div className={`p-3 mb-4 rounded-md ${errorMessage ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
@@ -390,7 +391,7 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose }) => {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       ) : email ? (
-        <div className="space-y-6">
+        <div className="space-y-6 flex-1 overflow-y-auto">
           {/* 邮件头部信息 */}
           <div className="flex justify-between items-start">
             <div>
@@ -404,13 +405,15 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose }) => {
               </div>
             </div>
             <div className="flex space-x-2">
-              <button
-                onClick={onClose}
-                className="p-2 rounded-md hover:bg-muted"
-                title={t('common.close')}
-              >
-                <i className="fas fa-times"></i>
-              </button>
+              {showCloseButton && onClose && (
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-md hover:bg-muted"
+                  title={t('common.close')}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              )}
               <button
                 onClick={handleDelete}
                 className="p-2 rounded-md hover:bg-red-100 text-red-600"

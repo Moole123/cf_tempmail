@@ -145,28 +145,32 @@ const MailboxPage: React.FC = () => {
         />
       )}
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-1">
-          <EmailList 
-            emails={emails} 
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-300px)]">
+        <div className="lg:col-span-1">
+          <EmailList
+            emails={emails}
             selectedEmailId={selectedEmail}
             onSelectEmail={setSelectedEmail}
             isLoading={isLoading}
           />
         </div>
-        <div className="md:col-span-2">
+        <div className="lg:col-span-2">
           {selectedEmail ? (
-            <EmailDetail 
-              emailId={selectedEmail} 
+            <EmailDetail
+              emailId={selectedEmail}
               onClose={() => setSelectedEmail(null)}
+              showCloseButton={false}
             />
           ) : (
             <div className="border rounded-lg p-6 h-full flex items-center justify-center">
-              <p className="text-muted-foreground text-center">
-                {emails.length > 0 
-                  ? t('email.selectEmailPrompt') 
-                  : t('email.emptyInbox')}
-              </p>
+              <div className="text-center">
+                <i className="fas fa-envelope-open text-4xl text-muted-foreground mb-4"></i>
+                <p className="text-muted-foreground">
+                  {emails.length > 0
+                    ? t('email.selectEmailPrompt')
+                    : t('email.emptyInbox')}
+                </p>
+              </div>
             </div>
           )}
         </div>
