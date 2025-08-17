@@ -66,7 +66,7 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
           // 如果邮箱不存在（404），则清除本地缓存并创建新邮箱
           if (response.status === 404) {
             await handleMailboxNotFound();
-            onClose(); // 关闭邮件详情
+            onClose?.(); // 关闭邮件详情
             return;
           }
           throw new Error('Failed to fetch email');
@@ -113,7 +113,7 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
         // 如果邮箱不存在（404），则清除本地缓存并创建新邮箱
         if (response.status === 404) {
           await handleMailboxNotFound();
-          onClose(); // 关闭邮件详情
+          onClose?.(); // 关闭邮件详情
           return;
         }
         throw new Error('Failed to fetch attachments');
@@ -160,7 +160,7 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
           window.clearTimeout(successTimeoutRef.current);
         }
         successTimeoutRef.current = window.setTimeout(() => {
-          onClose();
+          onClose?.();
         }, 2000);
       } else {
         throw new Error(data.error || 'Unknown error');
