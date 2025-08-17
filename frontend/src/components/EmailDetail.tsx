@@ -248,7 +248,9 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
     processedHtml = processedHtml.replace(/<img[^>]*>/gi, (imgTag) => {
       // 提取src属性中的cid值
       const srcMatch = imgTag.match(/src=["']([^"']+)["']/i);
-      if (!srcMatch) return imgTag;
+      if (!srcMatch) {
+        return imgTag;
+      }
 
       const srcValue = srcMatch[1];
 
@@ -259,7 +261,6 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
         // 尝试匹配附件
         const matchedAttachment = imageAttachments.find(att => {
           const filename = att.filename;
-          // 尝试多种匹配方式
           return cidValue === filename ||
                  cidValue === att.id ||
                  cidValue === filename.toLowerCase() ||
@@ -270,7 +271,22 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
         });
 
         if (matchedAttachment) {
-          const attachmentUrl = getAttachmentUrl(matchedAttachment.id, true);
+          const attachmentUrl = getAttachmentUrl(matchedAttachment.id, false); // 不强制下载，用于显示
+          return imgTag.replace(/src=["'][^"']+["']/, `src="${attachmentUrl}"`);
+        }
+      } else {
+        // 处理非cid引用，可能是直接的文件名引用
+        const matchedAttachment = imageAttachments.find(att => {
+          const filename = att.filename;
+          return srcValue === filename ||
+                 srcValue === filename.toLowerCase() ||
+                 srcValue.toLowerCase() === filename.toLowerCase() ||
+                 srcValue.includes(filename) ||
+                 filename.includes(srcValue);
+        });
+
+        if (matchedAttachment) {
+          const attachmentUrl = getAttachmentUrl(matchedAttachment.id, false);
           return imgTag.replace(/src=["'][^"']+["']/, `src="${attachmentUrl}"`);
         }
       }
@@ -278,21 +294,29 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose, showCloseBu
       return imgTag;
     });
 
-    // 处理其他可能的cid引用（非img标签中的）
+    // 处理其他可能的引用（包括纯文本文件名引用）
     imageAttachments.forEach(attachment => {
-      const attachmentUrl = getAttachmentUrl(attachment.id, true);
+      const attachmentUrl = getAttachmentUrl(attachment.id, false); // 不强制下载
       const filename = attachment.filename;
 
-      // 处理各种可能的cid引用格式（在非img标签中）
-      const cidPatterns = [
-        // 通用的 cid: 引用（不在img标签中）
+      // 处理各种可能的引用格式
+      const patterns = [
+        // cid引用（不在img标签中）
         new RegExp(`(?<!<img[^>]*)cid:${escapeRegExp(filename)}(?![^<]*>)`, 'gi'),
         new RegExp(`(?<!<img[^>]*)cid:"${escapeRegExp(filename)}"(?![^<]*>)`, 'gi'),
-        new RegExp(`(?<!<img[^>]*)cid:'${escapeRegExp(filename)}'(?![^<]*>)`, 'gi')
+        new RegExp(`(?<!<img[^>]*)cid:'${escapeRegExp(filename)}'(?![^<]*>)`, 'gi'),
+        // 纯文本文件名引用（将文本替换为图片标签）
+        new RegExp(`(?<!<[^>]*>)\\b${escapeRegExp(filename)}\\b(?![^<]*</)`, 'gi')
       ];
 
-      cidPatterns.forEach(pattern => {
-        processedHtml = processedHtml.replace(pattern, attachmentUrl);
+      patterns.forEach((pattern, index) => {
+        if (index === patterns.length - 1) {
+          // 最后一个模式：将纯文本文件名替换为图片标签
+          processedHtml = processedHtml.replace(pattern, `<img src="${attachmentUrl}" alt="${filename}" style="max-width: 100%; height: auto;" />`);
+        } else {
+          // 其他模式：直接替换为URL
+          processedHtml = processedHtml.replace(pattern, attachmentUrl);
+        }
       });
     });
 
