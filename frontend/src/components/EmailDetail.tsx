@@ -227,6 +227,81 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose }) => {
   const getAttachmentUrl = (attachmentId: string, download: boolean = false): string => {
     return `${API_BASE_URL}/api/attachments/${attachmentId}${download ? '?download=true' : ''}`;
   };
+
+  // 处理HTML内容中的内联图片引用
+  const processHtmlContent = (htmlContent: string, attachments: Attachment[]): string => {
+    if (!htmlContent || !attachments.length) {
+      return htmlContent;
+    }
+
+    let processedHtml = htmlContent;
+
+    // 为每个图片类型的附件创建映射
+    const imageAttachments = attachments.filter(att => att.mimeType.startsWith('image/'));
+
+    if (imageAttachments.length === 0) {
+      return htmlContent;
+    }
+
+    // 首先处理所有的img标签中的cid引用
+    processedHtml = processedHtml.replace(/<img[^>]*>/gi, (imgTag) => {
+      // 提取src属性中的cid值
+      const srcMatch = imgTag.match(/src=["']([^"']+)["']/i);
+      if (!srcMatch) return imgTag;
+
+      const srcValue = srcMatch[1];
+
+      // 检查是否是cid引用
+      if (srcValue.toLowerCase().startsWith('cid:')) {
+        const cidValue = srcValue.substring(4); // 移除 "cid:" 前缀
+
+        // 尝试匹配附件
+        const matchedAttachment = imageAttachments.find(att => {
+          const filename = att.filename;
+          // 尝试多种匹配方式
+          return cidValue === filename ||
+                 cidValue === att.id ||
+                 cidValue === filename.toLowerCase() ||
+                 cidValue.toLowerCase() === filename.toLowerCase() ||
+                 // 处理文件名不带扩展名的情况
+                 cidValue === filename.split('.')[0] ||
+                 cidValue.toLowerCase() === filename.split('.')[0].toLowerCase();
+        });
+
+        if (matchedAttachment) {
+          const attachmentUrl = getAttachmentUrl(matchedAttachment.id, true);
+          return imgTag.replace(/src=["'][^"']+["']/, `src="${attachmentUrl}"`);
+        }
+      }
+
+      return imgTag;
+    });
+
+    // 处理其他可能的cid引用（非img标签中的）
+    imageAttachments.forEach(attachment => {
+      const attachmentUrl = getAttachmentUrl(attachment.id, true);
+      const filename = attachment.filename;
+
+      // 处理各种可能的cid引用格式（在非img标签中）
+      const cidPatterns = [
+        // 通用的 cid: 引用（不在img标签中）
+        new RegExp(`(?<!<img[^>]*)cid:${escapeRegExp(filename)}(?![^<]*>)`, 'gi'),
+        new RegExp(`(?<!<img[^>]*)cid:"${escapeRegExp(filename)}"(?![^<]*>)`, 'gi'),
+        new RegExp(`(?<!<img[^>]*)cid:'${escapeRegExp(filename)}'(?![^<]*>)`, 'gi')
+      ];
+
+      cidPatterns.forEach(pattern => {
+        processedHtml = processedHtml.replace(pattern, attachmentUrl);
+      });
+    });
+
+    return processedHtml;
+  };
+
+  // 转义正则表达式特殊字符
+  const escapeRegExp = (string: string): string => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  };
   
   // 渲染附件预览
   const renderAttachmentPreview = (attachment: Attachment) => {
@@ -284,7 +359,25 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose }) => {
   };
   
   return (
-    <div className="border rounded-lg p-6">
+    <>
+      {/* 添加邮件内容的样式 */}
+      <style>{`
+        .email-content img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 4px;
+          margin: 8px 0;
+        }
+        .email-content table {
+          max-width: 100%;
+          border-collapse: collapse;
+        }
+        .email-content td, .email-content th {
+          padding: 4px 8px;
+        }
+      `}</style>
+
+      <div className="border rounded-lg p-6">
       {/* 错误和成功提示 */}
       {(errorMessage || successMessage) && (
         <div className={`p-3 mb-4 rounded-md ${errorMessage ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
@@ -335,9 +428,14 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose }) => {
           <div>
             <h3 className="font-medium mb-2">{t('email.content')}</h3>
             {email.htmlContent ? (
-              <div 
-                className="prose max-w-none border rounded-md p-4 bg-white"
-                dangerouslySetInnerHTML={{ __html: email.htmlContent }}
+              <div
+                className="prose max-w-none border rounded-md p-4 bg-white email-content"
+                dangerouslySetInnerHTML={{ __html: processHtmlContent(email.htmlContent, attachments) }}
+                style={{
+                  // 确保内联图片能正确显示
+                  '--tw-prose-body': 'inherit',
+                  '--tw-prose-headings': 'inherit'
+                } as React.CSSProperties}
               />
             ) : email.textContent ? (
               <pre className="whitespace-pre-wrap border rounded-md p-4 bg-white font-sans">
@@ -403,7 +501,8 @@ const EmailDetail: React.FC<EmailDetailProps> = ({ emailId, onClose }) => {
           </p>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 

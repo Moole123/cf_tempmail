@@ -32,9 +32,11 @@ interface Attachment {
   id: string;
   emailId: string;
   filename: string;
-  contentType: string;
-  content: ArrayBuffer;
+  mimeType: string;
   size: number;
+  createdAt: number;
+  isLarge: boolean;
+  chunksCount: number;
 }
 
 // Toast 相关类型
